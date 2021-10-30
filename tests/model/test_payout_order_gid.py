@@ -5,7 +5,7 @@ from model.payout_order_gid import PayoutOrderGid
 
 class TestPayoutOrderGid(object):
 
-    def test_a(self):
+    def test_gid(self):
         p = PayoutOrderGid()
         a = p.get()
         b = p.get()

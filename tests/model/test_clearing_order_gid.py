@@ -5,7 +5,7 @@ from model.clearing_order_gid import ClearingOrderGid
 
 class TestClearingOrderGid(object):
 
-    def test_a(self):
+    def test_get(self):
         p = ClearingOrderGid()
         a = p.get()
         b = p.get()

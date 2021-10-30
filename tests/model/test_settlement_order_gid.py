@@ -5,7 +5,7 @@ from model.settlement_order_gid import SettlementOrderGid
 
 class TestSettlementOrderGid(object):
 
-    def test_a(self):
+    def test_gid(self):
         p = SettlementOrderGid()
         a = p.get()
         b = p.get()
