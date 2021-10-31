@@ -2,6 +2,7 @@ from collections import namedtuple
 from enum import Enum
 
 from model import util
+from model.clearing_order_gid import clearing_order_gid
 
 
 class PaymentServiceProvider(Enum):
@@ -115,8 +116,11 @@ class ClearingOrder(object):
     def insert(self, **kw):
         shard_index = kw['order_complete_time'] // 24 // 3600 % SHARD_NUMBER
         shard = self.shards[shard_index]
+
+        clearing_order_id = kw.pop('clearing_order_id', self.create_new_clearing_order_id(shard_index))
         new_id = len(shard)
-        new_row = dummy_row._replace(id=new_id, **kw)
+
+        new_row = dummy_row._replace(id=new_id, clearing_order_id=clearing_order_id, **kw)
         shard.append(new_row)
         return 1
 
@@ -126,6 +130,10 @@ class ClearingOrder(object):
         for r in shard:
             if r.clearing_order_id == clearing_order_id:
                 return r
+
+    def create_new_clearing_order_id(self, shard_index):
+        gid = clearing_order_gid.get()
+        return util.get_sharded_id(shard_index, gid)
 
 
 dummy_row = Row(

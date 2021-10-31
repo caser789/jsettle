@@ -15,16 +15,19 @@ class TestClearingOrder(object):
         assert len(c.shards[1]) == 1
         assert c.shards[1][0].id == 0
         assert c.shards[1][0].order_complete_time == 24*3600
+        assert c.shards[1][0].clearing_order_id == 1000010000000000000
 
         c.insert(order_complete_time=24*3600)
         assert len(c.shards[1]) == 2
         assert c.shards[1][1].id == 1
         assert c.shards[1][1].order_complete_time == 24*3600
+        assert c.shards[1][1].clearing_order_id == 1000010000000000001
 
         c.insert(order_complete_time=24*3600*2)
         assert len(c.shards[2]) == 1
         assert c.shards[2][0].id == 0
         assert c.shards[2][0].order_complete_time == 24*3600*2
+        assert c.shards[2][0].clearing_order_id == 1000020000000000002
 
     def test_get(self):
         order_complete_time = 24*3600

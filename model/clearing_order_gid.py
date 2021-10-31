@@ -7,3 +7,6 @@ class ClearingOrderGid(object):
         res = self._id
         self._id += 1
         return res
+
+
+clearing_order_gid = ClearingOrderGid()
