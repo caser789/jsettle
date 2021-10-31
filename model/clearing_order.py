@@ -1,6 +1,8 @@
 from collections import namedtuple
 from enum import Enum
 
+from model import util
+
 
 class PaymentServiceProvider(Enum):
     """ upstream service (payment service provider), 1 for acquiring, 2 for MWS
@@ -119,7 +121,11 @@ class ClearingOrder(object):
         return 1
 
     def get(self, clearing_order_id):
-        pass
+        shard_index = util.get_table_shard_index(clearing_order_id)
+        shard = self.shards[shard_index]
+        for r in shard:
+            if r.clearing_order_id == clearing_order_id:
+                return r
 
 
 dummy_row = Row(
