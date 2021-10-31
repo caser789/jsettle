@@ -7,3 +7,6 @@ class SettlementOrderGid(object):
         res = self._id
         self._id += 1
         return res
+
+
+settlement_order_gid = SettlementOrderGid()
