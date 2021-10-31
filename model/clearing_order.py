@@ -1,3 +1,4 @@
+import time
 from collections import namedtuple
 from enum import Enum
 
@@ -130,6 +131,17 @@ class ClearingOrder(object):
         for r in shard:
             if r.clearing_order_id == clearing_order_id:
                 return r
+
+    def update(self, _id, clearing_order_id, **kw):
+        update_time = kw.pop('update_time', int(time.time()))
+
+        shard_index = util.get_table_shard_index(clearing_order_id)
+        rows = self.shards[shard_index]
+        row = rows[_id]
+
+        new_row = row._replace(update_time=update_time, **kw)
+        rows[_id] = new_row
+        return 1
 
     def create_new_clearing_order_id(self, shard_index):
         gid = clearing_order_gid.get()

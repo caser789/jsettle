@@ -8,7 +8,7 @@ from model.clearing_order import SHARD_NUMBER
 
 class TestClearingOrder(object):
 
-    def test_insert(self):
+    def test_insert_and_update(self):
         c = ClearingOrder()
 
         c.insert(order_complete_time=24*3600)
@@ -28,6 +28,14 @@ class TestClearingOrder(object):
         assert c.shards[2][0].id == 0
         assert c.shards[2][0].order_complete_time == 24*3600*2
         assert c.shards[2][0].clearing_order_id == 1000020000000000002
+
+        # test update
+        clearing_order_id = 1000010000000000001
+        r = c.get(clearing_order_id)
+        c.update(r.id, r.clearing_order_id, update_time=123, order_amount=333)
+        r = c.get(clearing_order_id)
+        assert r.update_time == 123
+        assert r.order_amount == 333
 
     def test_get(self):
         order_complete_time = 24*3600
