@@ -7,3 +7,6 @@ class PayoutOrderGid(object):
         res = self._id
         self._id += 1
         return res
+
+
+payout_order_gid = PayoutOrderGid()
