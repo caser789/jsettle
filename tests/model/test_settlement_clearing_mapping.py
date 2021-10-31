@@ -2,8 +2,6 @@ import unittest
 
 from model import util
 from model.settlement_clearing_mapping import SettlementClearingMapping
-from model.settlement_order import SettlementOrder
-from model.clearing_order import ClearingOrder
 
 
 class TestSettlementClearingMapping(object):
@@ -20,10 +18,6 @@ class TestSettlementClearingMapping(object):
         m.insert(settlement_order_id1, clearing_order_id)
         m.insert(settlement_order_id2, clearing_order_id)
         m.insert(settlement_order_id3, clearing_order_id)
-
-        print(settlement_order_id1 % 300)
-        print(settlement_order_id2 % 300)
-        print(settlement_order_id3 % 300)
 
         assert len(m.shards[1]) == 2
         assert len(m.shards[202]) == 1
