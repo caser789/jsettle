@@ -54,6 +54,10 @@ SHARD_NUMBER = 300
 
 class PayoutOrder(object):
 
+    # UKEY payout_order_id
+    # KEY create_time
+    # KEY payout_trx_id
+
     def __init__(self):
         self.shards = [[] for _ in range(SHARD_NUMBER)]
 
