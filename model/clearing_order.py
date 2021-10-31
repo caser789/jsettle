@@ -118,6 +118,9 @@ class ClearingOrder(object):
         shard.append(new_row)
         return 1
 
+    def get(self, clearing_order_id):
+        pass
+
 
 dummy_row = Row(
     id=0,
