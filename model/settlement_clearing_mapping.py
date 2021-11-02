@@ -38,3 +38,6 @@ class SettlementClearingMapping(object):
             create_time=int(time.time()),
         ))
         return 1
+
+
+settlement_clearing_mapping = SettlementClearingMapping()

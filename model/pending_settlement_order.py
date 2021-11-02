@@ -64,3 +64,6 @@ dummy_row = Row(
     create_time=0,
     update_time=0,
 )
+
+
+pending_settlement_order = PendingSettlementOrder()

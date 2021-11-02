@@ -11,19 +11,19 @@ class TestClearingOrder(object):
     def test_insert_and_update(self):
         c = ClearingOrder()
 
-        c.insert(order_complete_time=24*3600)
+        c.insert(24*3600)
         assert len(c.shards[1]) == 1
         assert c.shards[1][0].id == 0
         assert c.shards[1][0].order_complete_time == 24*3600
         assert c.shards[1][0].clearing_order_id == 1000010000000000000
 
-        c.insert(order_complete_time=24*3600)
+        c.insert(24*3600)
         assert len(c.shards[1]) == 2
         assert c.shards[1][1].id == 1
         assert c.shards[1][1].order_complete_time == 24*3600
         assert c.shards[1][1].clearing_order_id == 1000010000000000001
 
-        c.insert(order_complete_time=24*3600*2)
+        c.insert(24*3600*2)
         assert len(c.shards[2]) == 1
         assert c.shards[2][0].id == 0
         assert c.shards[2][0].order_complete_time == 24*3600*2
@@ -44,7 +44,7 @@ class TestClearingOrder(object):
         clearing_order_id = util.get_sharded_id(table_shard_index, _id)
 
         c = ClearingOrder()
-        c.insert(order_complete_time=order_complete_time, clearing_order_id=clearing_order_id)
+        c.insert(order_complete_time, clearing_order_id=clearing_order_id)
 
         r = c.get(clearing_order_id)
         assert r.clearing_order_id == clearing_order_id

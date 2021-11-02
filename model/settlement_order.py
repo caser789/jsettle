@@ -153,3 +153,6 @@ dummy_row = Row(
     error_code=0,
     extra_data='',
 )
+
+
+settlement_order = SettlementOrder()

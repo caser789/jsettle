@@ -38,3 +38,6 @@ class PayoutSettlementMapping(object):
             create_time=int(time.time()),
         ))
         return 1
+
+
+payout_settlement_mapping = PayoutSettlementMapping()

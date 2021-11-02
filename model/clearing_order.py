@@ -3,14 +3,8 @@ from collections import namedtuple
 from enum import Enum
 
 from model import util
+from model import const
 from model.clearing_order_gid import clearing_order_gid
-
-
-class PaymentServiceProvider(Enum):
-    """ upstream service (payment service provider), 1 for acquiring, 2 for MWS
-    """
-    ACQUIRING = 1
-    MWS = 2
 
 
 class Status(Enum):
@@ -19,15 +13,6 @@ class Status(Enum):
     ACCOUNTED_COMPLETE = 3
     CLEARING_COMPLETE = 4
     CLEARING_FAILED = 5
-
-
-class OrderType(Enum):
-    PAYMENT = 1
-    REFUND = 2
-    ADJUSTMENT_ADD = 3
-    ADJUSTMENT_DEDUCT = 4
-    DISBURSEMENT_OR_CASH_IN = 5
-    CASH_OUT = 6
 
 
 class SubOrderType(Enum):
@@ -114,16 +99,21 @@ class ClearingOrder(object):
     def __init__(self):
         self.shards = [[] for _ in range(SHARD_NUMBER)]
 
-    def insert(self, **kw):
-        shard_index = kw['order_complete_time'] // 24 // 3600 % SHARD_NUMBER
+    def insert(self, order_complete_time, **kw):
+        shard_index = order_complete_time // 24 // 3600 % SHARD_NUMBER
         shard = self.shards[shard_index]
 
         clearing_order_id = kw.pop('clearing_order_id', self.create_new_clearing_order_id(shard_index))
         new_id = len(shard)
 
-        new_row = dummy_row._replace(id=new_id, clearing_order_id=clearing_order_id, **kw)
+        new_row = dummy_row._replace(
+            id=new_id,
+            clearing_order_id=clearing_order_id,
+            order_complete_time=order_complete_time,
+            **kw
+        )
         shard.append(new_row)
-        return 1
+        return new_row
 
     def get(self, clearing_order_id):
         shard_index = util.get_table_shard_index(clearing_order_id)
@@ -160,8 +150,8 @@ dummy_row = Row(
     merchant_id=0,
     store_id=0,
     merchant_host_id=0,
-    service_id=PaymentServiceProvider.ACQUIRING,
-    order_type=OrderType.PAYMENT,
+    service_id=const.PaymentServiceProvider.ACQUIRING,
+    order_type=const.OrderType.PAYMENT,
     sub_order_type=SubOrderType.T0,
     order_reference_id=0,
     payment_order_id=0,
@@ -195,3 +185,6 @@ dummy_row = Row(
     error_code=0,
     extra_data='',
 )
+
+
+clearing_order = ClearingOrder()

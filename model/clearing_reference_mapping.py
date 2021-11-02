@@ -63,3 +63,6 @@ dummy_row = Row(
     sharding_table_index=0,
     clearing_order_id=0,
 )
+
+
+clearing_reference_mapping = ClearingReferenceMapping()

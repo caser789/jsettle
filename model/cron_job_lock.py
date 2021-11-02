@@ -40,3 +40,6 @@ class CronJobLock(object):
 
         del self.rows[key]
         return True
+
+
+cron_job_lock = CronJobLock()
