@@ -25,8 +25,22 @@ class MSSAgent(object):
             ]),
         }
 
-    def get_merchant_details(self):
-        pass
+    def get_merchant_details(self, merchant_id):
+        return {
+            'settlement_cycle': random.choice([
+                const.SettlementCycle.REALTIME,
+                const.SettlementCycle.DAILY,
+                const.SettlementCycle.WEEKLY,
+                const.SettlementCycle.BIWEEKLY,
+                const.SettlementCycle.MONTHLY,
+            ]),
+            'settlement_id': random.randint(1, 100),
+            'settle_to': random.choice([
+                const.SettlementTarget.MERCHANT_HOST,
+                const.SettlementTarget.MERCHANT,
+                const.SettlementTarget.STORE,
+            ]),
+        }
 
 
 mss_agent = MSSAgent()
