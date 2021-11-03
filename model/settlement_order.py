@@ -13,6 +13,12 @@ class Status(Enum):
     SETTLEMENT_CLOSED = 4
 
 
+class TxnType(Enum):
+    UNKNOWN = 0
+    NON_INVOICE = 1
+    INVOICE = 2
+
+
 Row = namedtuple(
     'Row',
     [
@@ -109,6 +115,21 @@ class SettlementOrder(object):
         new_row = row._replace(update_time=update_time, **kw)
         rows[_id] = new_row
         return 1
+
+    def find_by_clearing_order_current_time(self, model, create_time):
+        shard_index = create_time // 24 // 3600 % SHARD_NUMBER
+        shard = self.shards[shard_index]
+        for r in shard:
+            if (
+                r.clearing_entity_id == model.clearing_entity_id and
+                r.clearing_entity_type == model.clearing_entity_type and
+                r.settlement_target_id == model.settlement_target_id and
+                r.settlement_target_type == model.settlement_target_type and
+                r.service_id == model.service_id and
+                r.settlement_cycle == model.settlement_cycle and
+                r.create_time > create_time - 24*3600
+            ):
+                return r
 
 
 dummy_row = Row(

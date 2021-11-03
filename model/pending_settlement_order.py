@@ -42,7 +42,7 @@ class PendingSettlementOrder(object):
 
         new_row = dummy_row._replace(id=new_id, create_time=create_time, update_time=update_time, **kw)
         self.rows.append(new_row)
-        return 1
+        return new_row
 
 
 dummy_row = Row(

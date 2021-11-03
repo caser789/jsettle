@@ -131,7 +131,7 @@ class ClearingOrder(object):
 
         new_row = row._replace(update_time=update_time, **kw)
         rows[_id] = new_row
-        return 1
+        return new_row
 
     def create_new_clearing_order_id(self, shard_index):
         gid = clearing_order_gid.get()
