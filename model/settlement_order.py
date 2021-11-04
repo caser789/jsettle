@@ -131,6 +131,25 @@ class SettlementOrder(object):
             ):
                 return r
 
+    def find_imcomplete_settlement_orders_to_retry_in_n_days(self, n, trx_type):
+        # offset = 0
+        # limit = 1000
+        settlement_time = int(time.time())
+        base_shard_index = settlement_time // 24 // 3600 % SHARD_NUMBER
+        res = []
+        for i in range(n):
+            shard_index = base_shard_index - i
+            shard = self.shards[shard_index]
+            for r in shard:
+                if r.settlement_trx_type != trx_type:
+                    continue
+                if r.status == Status.SETTLEMENT_COMPLETE:
+                    continue
+                if r.create_time >= settlement_time:
+                    continue
+                res.append(r)
+        return res
+
 
 dummy_row = Row(
     id=0,
