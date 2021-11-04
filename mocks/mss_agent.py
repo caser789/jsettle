@@ -42,5 +42,23 @@ class MSSAgent(object):
             ]),
         }
 
+    def get_entity_info(self, service_id, entity_type, entity_id):
+        return {
+            'wallet_account_id': random.randint(1, 100),
+            'settlement_cycle': random.choice([
+                const.SettlementCycle.REALTIME,
+                const.SettlementCycle.DAILY,
+                const.SettlementCycle.WEEKLY,
+                const.SettlementCycle.BIWEEKLY,
+                const.SettlementCycle.MONTHLY,
+            ]),
+            'settlement_target_type': random.choice([
+                const.SettlementTarget.MERCHANT_HOST,
+                const.SettlementTarget.MERCHANT,
+                const.SettlementTarget.STORE,
+            ]),
+            'settlement_target_id': random.randint(1, 100),
+        }
+
 
 mss_agent = MSSAgent()

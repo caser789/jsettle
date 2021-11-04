@@ -38,3 +38,14 @@ class SettlementTarget(Enum):
     MERCHANT_HOST = 1
     MERCHANT = 2
     STORE = 3
+
+
+class MWEFeeType(Enum):
+    PAYMENT = 0
+    REFUND = 1
+
+
+class MWETrxType(Enum):
+    POSITIVE = 1
+    NEGATIVE = 2
+    INSTANT = 3

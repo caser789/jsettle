@@ -153,6 +153,44 @@ class ClearingOrder(object):
 
         return rows
 
+    def find_by_pending_settlement(self, shard_index, settlement_model, offset, limit, order_types):
+        res = []
+        shard = self.shards[shard_index]
+
+        if offset >= len(shard):
+            return res
+
+        for j in range(limit):
+            i = offset + j
+            if i >= len(shard):
+                break
+
+            row = shard[i]
+            if row.clearing_entity_id != settlement_model.clearing_entity_id:
+                continue
+            if row.clearing_entity_type != settlement_model.clearing_entity_type:
+                continue
+            if row.settlement_target_type != settlement_model.settlement_target_type:
+                continue
+            if row.settlement_target_id != settlement_model.settlement_target_id:
+                continue
+            if row.settlement_cycle != settlement_model.settlement_cycle:
+                continue
+            if row.service_id != settlement_model.service_id:
+                continue
+            if row.status != Status.CLEARING_COMPLETE:
+                continue
+            if row.settlement_order_id != 0:
+                continue
+            if row.planned_settlement_time >= int(time.time()):
+                continue
+            if row.order_type not in order_types:
+                continue
+
+            res.append(row)
+
+        return res
+
 
 dummy_row = Row(
     id=0,

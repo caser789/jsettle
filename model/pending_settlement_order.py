@@ -44,6 +44,57 @@ class PendingSettlementOrder(object):
         self.rows.append(new_row)
         return new_row
 
+    def delete(self, clearing_order_id):
+        j = None
+        for i, row in enumerate(selr.rows):
+            if row.clearing_order_id == clearing_order_id:
+                j = i
+                break
+        if j is not None:
+            del self.rows[j]
+
+    def find_to_settle(self, planned_settlement_time, settlement_trx_type, offset, limit):
+        """
+        return
+            [
+                (row, {sharding_index1, sharding_index2}),
+                ...
+            ]
+        """
+        if offset >= len(self.rows):
+            return []
+
+        store = {}
+        for i in range(limit):
+            j = i + offset
+            if j >= len(self.rows):
+                break
+
+            row = self.rows[j]
+            if row.planned_settlement_time >= planned_settlement_time:
+                continue
+
+            if row.settlement_trx_type != settlement_trx_type:
+                continue
+
+            key = (
+                row.service_id,
+                row.clearing_entity_id,
+                row.clearing_entity_type,
+                row.settlement_target_id,
+                row.settlement_target_type,
+                row.settlement_cycle,
+            )
+            if key in store:
+                store[key][1].add(row.sharding_table_index)
+                continue
+
+            store[key] = [row, {row.sharding_table_index}]
+
+        res = store.values()
+        res.sort(key=lambda x: x[0].clearing_entity_id)
+        return res
+
 
 dummy_row = Row(
     id=0,

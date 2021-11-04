@@ -92,7 +92,7 @@ class SettlementOrder(object):
 
         new_row = dummy_row._replace(id=new_id, settlement_order_id=settlement_order_id, **kw)
         shard.append(new_row)
-        return 1
+        return new_row
 
     def create_new_settlement_order_id(self, shard_index):
         gid = settlement_order_gid.get()
