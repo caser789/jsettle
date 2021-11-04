@@ -137,6 +137,22 @@ class ClearingOrder(object):
         gid = clearing_order_gid.get()
         return util.get_sharded_id(shard_index, gid)
 
+    def find_imcomplete_orders_in_recent_n_days(self, n):
+        """for retry clearing
+        """
+        now = int(time.time())
+        base_shard_index = now // 24 // 3600 % SHARD_NUMBER
+        rows = []
+
+        for i in range(n):
+            shard_index = base_shard_index - i
+            shard = self.shards[shard_index]
+            for r in shard:
+                if r.create_time < now - 60*5 and r.status != Status.CLEARING_COMPLETE:
+                    rows.append(r)
+
+        return rows
+
 
 dummy_row = Row(
     id=0,

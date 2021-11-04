@@ -7,6 +7,7 @@ from model.payout_order_gid import payout_order_gid
 
 
 class Status(Enum):
+    UNKNOWN = 0
     INITIAL = 1
     PAYOUT_PROCESSING = 2
     PAYOUT_PENDING_UPDATE = 3

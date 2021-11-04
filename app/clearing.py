@@ -30,22 +30,29 @@ Order = namedtuple(
 
 
 def schedule(service_id, order):
-    payout_order_id = _try_get_existing_payout_order_id(service_id, order)
+    payout_order_id = try_get_existing_payout_order_id(service_id, order)
     if payout_order_id is not None:
         return payout_order_id
 
-    order_record = _persist_within_transaction(service_id, order)
+    order_record = persist_within_transaction(service_id, order)
 
-    _start_clearing(order_record.clearing_order_id)
+    start_clearing(order_record.clearing_order_id)
 
 
-def _try_get_existing_payout_order_id(service_id, order):
+def retry():
+    orders = clearing_order.find_imcomplete_orders_in_recent_n_days(7)
+
+    for order in orders:
+        start_clearing(order.clearing_order_id)
+
+
+def try_get_existing_payout_order_id(service_id, order):
     mapping = clearing_reference_mapping.get(service_id, order.order_type, order.order_id)
     if mapping is not None:
         return mapping.clearing_order_id
 
 
-def _persist_within_transaction(service_id, order):
+def persist_within_transaction(service_id, order):
     clearing_entity_id = None
     if order.order_owner_level == const.OwnerLevel.STORE:
         clearing_entity_id = order.store_id
@@ -83,7 +90,7 @@ def _persist_within_transaction(service_id, order):
     return order_record
 
 
-def _start_clearing(clearing_order_id):
+def start_clearing(clearing_order_id):
     model = clearing_order.get(clearing_order_id)
     if model is None:
         return
